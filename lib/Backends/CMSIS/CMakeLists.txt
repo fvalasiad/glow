@@ -27,6 +27,7 @@ set(LIBJIT_CMSIS_COMPILE_OPTIONS
     -std=c99
     -g
     -O0
+    ${LLVMCPURuntimeExtraFlags}
 )
 
 glow_add_libjit(
