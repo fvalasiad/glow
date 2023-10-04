@@ -42,6 +42,6 @@ add_library(CMSISBackend
 	    CMSISFactory.cpp
             CMSISLLVMIRGen.cpp)
 
-add_dependencies(CMSISBackend libjit_cmsis_TARGET)
+add_dependencies(CMSISBackend libjit_cmsis_TARGET IR)
 
 set(linked_backends ${linked_backends} CMSISBackend PARENT_SCOPE)
