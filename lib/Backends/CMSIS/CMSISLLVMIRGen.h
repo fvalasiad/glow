@@ -21,7 +21,6 @@
 namespace glow {
 
 class CMSISLLVMIRGen : public CPULLVMIRGen {
-
 public:
   virtual ~CMSISLLVMIRGen() = default;
 

@@ -358,6 +358,40 @@ QuantizationTransform32To8 quantizeScaleOffset32To8(float scale,
                                     offset);
 }
 
+namespace CMSIS {
+
+QuantizationTransform32To8 quantizeScaleOffset32To8(float scale,
+                                                    int32_t offset) {
+  if (scale == 0.) {
+      return {0, 0};
+  }
+
+  const float scaleFactor = std::frexp(scale, &offset);
+  auto quantizedScale = static_cast<int64_t>(std::round(scaleFactor * (1ll << 31)));
+
+  if (quantizedScale > (1ll << 31)) {
+    std::exit(1);
+  }
+
+  if (quantizedScale == (1ll << 31)) {
+    quantizedScale /= 2;
+    ++offset;
+  }
+
+  if (quantizedScale > std::numeric_limits<int32_t>::max()) {
+    std::exit(1);
+  }
+
+  if (offset < -31) {
+    offset = 0;
+    quantizedScale = 0;
+  }
+
+  return {static_cast<int32_t>(quantizedScale), offset};
+}
+
+} // namespace CMSIS
+
 QuantizedRange getQuantizedRange(ElemKind qTy) {
   // Pick int64_t in order to cover the uint32_t range.
   int64_t qmin;
