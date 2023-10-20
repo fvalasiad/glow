@@ -19,10 +19,20 @@
 
 using namespace glow;
 
+static const unsigned char libjit_bc[] = {
+#include "glow/libjit/libjit_cmsis.inc"
+};
+static const size_t libjit_bc_size = sizeof(libjit_bc);
+
 std::unique_ptr<LLVMIRGen>
 CMSISBackend::createIRGen(const IRFunction *IR,
                           AllocationsInfo &allocationsInfo) const {
   CMSISLLVMIRGen *irgen = new CMSISLLVMIRGen(
        IR, allocationsInfo, "", getLibjitBitcode(), getObjectRegistry());
   return std::unique_ptr<CMSISLLVMIRGen>(irgen);
+}
+
+llvm::StringRef CMSISBackend::getLibjitBitcode() const {
+  return llvm::StringRef(reinterpret_cast<const char *>(libjit_bc),
+                         libjit_bc_size);
 }

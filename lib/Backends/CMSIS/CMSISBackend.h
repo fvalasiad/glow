@@ -34,6 +34,9 @@ public:
   virtual std::unique_ptr<LLVMIRGen>
   createIRGen(const IRFunction *IR,
               AllocationsInfo &allocationsInfo) const override;
+
+protected:
+  virtual llvm::StringRef getLibjitBitcode() const override;
 };
 
 } // namespace glow

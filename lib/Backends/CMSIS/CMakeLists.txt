@@ -2,6 +2,8 @@ include(GlowAddLibjit)
 
 set(LIBJIT_CMSIS_SOURCE_FILES)
 list(APPEND LIBJIT_CMSIS_SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/libjit_cmsis.c
+
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.c
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.c
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/ConvolutionFunctions/arm_convolve_wrapper_s8.c
@@ -20,21 +22,29 @@ list(APPEND LIBJIT_CMSIS_SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/ConvolutionFunctions/arm_depthwise_conv_3x3_s8.c
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8.c
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8_opt.c
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../LLVMIRCodeGen/libjit/libjit.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../LLVMIRCodeGen/libjit/libjit_conv.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../LLVMIRCodeGen/libjit/libjit_matmul.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../CPU/libjit_cpu/libjit_cpu.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../CPU/libjit_cpu/libjit_cpu_conv.cpp
 )
 
 set(LIBJIT_CMSIS_COMPILE_OPTIONS
-    -I${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Include
-    -std=c99
-    -g
-    -O0
-    ${LLVMCPURuntimeExtraFlags}
+  -I${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Include
+  -I${CMAKE_CURRENT_SOURCE_DIR}/../../LLVMIRCodeGen/libjit
+  -std=c++14
+  -g
+  -O0
+  ${LLVMCPURuntimeExtraFlags}
+
+  -DGLOW_LIBJIT_EXTERNAL_FUNCTIONS
 )
 
 glow_add_libjit(
   NAME "libjit_cmsis"
   SOURCE_FILES ${LIBJIT_CMSIS_SOURCE_FILES}
   COMPILE_OPTIONS ${LIBJIT_CMSIS_COMPILE_OPTIONS}
-  CLANG_BIN ${CMAKE_C_COMPILER}
 )
 
 add_library(CMSISBackend
@@ -43,6 +53,6 @@ add_library(CMSISBackend
 	    CMSISFactory.cpp
             CMSISLLVMIRGen.cpp)
 
-add_dependencies(CMSISBackend libjit_cmsis_TARGET IR)
+add_dependencies(CMSISBackend libjit_cmsis_TARGET CPUBackend IR)
 
 set(linked_backends ${linked_backends} CMSISBackend PARENT_SCOPE)
