@@ -2,7 +2,7 @@ include(GlowAddLibjit)
 
 set(LIBJIT_CMSIS_SOURCE_FILES)
 list(APPEND LIBJIT_CMSIS_SOURCE_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/libjit_cmsis.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/libjit_cmsis.cpp
 
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.c
   ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.c
