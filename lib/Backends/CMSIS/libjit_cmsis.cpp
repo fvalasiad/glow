@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "libjit_defs.h"
 
 extern "C" {
 #include <stdlib.h>
@@ -22,30 +23,7 @@ extern "C" {
 #include "arm_nnfunctions.h"
 #include "arm_nnsupportfunctions.h"
 
-#ifdef DIM_T_32
-// The dimensions of Tensors are stored with this type. Note: The same
-// fixed width type is used both in the host and the possible co-processors
-// handling tensor data. The bit width should be chosen carefully for maximum
-// data level parallel execution.
-typedef uint32_t dim_t;
-typedef int32_t sdim_t;
-
-#define PRIdDIM PRId32
-#define PRIuDIM PRIu32
-
-#else // DIM_T_32
-typedef uint64_t dim_t;
-typedef int64_t sdim_t;
-
-#define PRIdDIM PRId64
-#define PRIuDIM PRIu64
-
-#endif // DIM_T_32
-
-#define DIM_T_BITWIDTH sizeof(dim_t) * 8;
-#define SDIM_T_BITWIDTH sizeof(sdim_t) * 8;
-
-void cmsis_fc_s8(int8_t *outW, const int8_t *inW, const int8_t *weightsW,
+void libjit_cmsis_fc_s8(int8_t *outW, const int8_t *inW, const int8_t *weightsW,
                       const int32_t *biasW, const dim_t *outWdims,
                       const dim_t *inWdims, const dim_t *weightsWdims,
                       const dim_t *biasWdims, int32_t outOffset,
@@ -84,7 +62,7 @@ void cmsis_fc_s8(int8_t *outW, const int8_t *inW, const int8_t *weightsW,
     free(weightsW_reord);
 }
 
-void cmsis_depthwise_conv2_3d_i8_i32(
+void libjit_cmsis_depthwise_conv2_3d_i8_i32(
     int8_t *outW, const int8_t *inW, const int8_t *filterW,
     const int32_t *biasW, const dim_t *outWdims, const dim_t *inWdims,
     const dim_t *filterWdims, const dim_t *biasWdims, const dim_t *kernels,

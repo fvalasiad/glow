@@ -89,7 +89,7 @@ void CMSISLLVMIRGen::generateLLVMIRForInstr(llvm::IRBuilder<> &builder,
         auto *cmsis_scale = emitConstI32(builder, cmsis_outScaleParam.scale);
         auto *cmsis_Offset = emitConstI32(builder, cmsis_outScaleParam.offset);
 
-        auto *F = getFunctionByName("cmsis_fc_s8");
+        auto *F = getFunction("cmsis_fc_s8");
         createCall(builder, F,
                   {destPtr, srcPtr, weightsPtr, biasPtr, destDims, srcDims,
                     weightsDims, biasDims, destOffset, srcOffset, weightsOffset,
@@ -202,7 +202,7 @@ void CMSISLLVMIRGen::generateLLVMIRForInstr(llvm::IRBuilder<> &builder,
         emitConstArray(builder, CMSISOffsetV, builder.getInt32Ty());
 
     bool isDepthwise = (filter->dims()[3] == 1 && dest->dims()[3] == src->dims()[3]);
-    auto *F = getFunctionByName(isDepthwise ? "cmsis_depthwise_conv2_3d_i8_i32"
+    auto *F = getFunction(isDepthwise ? "cmsis_depthwise_conv2_3d_i8_i32"
                                       : "cmsis_channelwise_conv2_3d_i8_i32");
 
     auto *actType = emitConstI32(builder, CQCI->getFusedActivation());
