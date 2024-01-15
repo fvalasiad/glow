@@ -1,3 +1,78 @@
-###Something
+# Adding a new backend to Pytorch/Glow, CMSIS
 
-something else entirely
+The purpose of this project is to utilize ARM's collection of efficient neural network kernels in collaboration with glow in an attempt to optimize the execution of neural networks on arm devices.
+
+## Glow
+Glow is a neural network compiler, quite literally taking neural networks as input in various formats and spitting out machine code for a number of architectures.
+
+Each target architecture is represented as a backend and its code can be found under /lib/Backends/
+
+The Backend we are interested in for our work is the CPU backend, being essentially our everyday x86/ARM/(soon to be) RISCV CPUs
+
+### How glow works
+Glow has a number of stages between the input neural network and the produced machine code, namely 2 main intermediate representations, the so called "High-level IR" being a graph, as well as a "Low-level IR" being a sequential IR.
+
+Glow employs a number of high level, linear-algebra fashioned optimizations during the "High-level IR" stage to optimize the neural network.
+Glow also optimizes the low level IR, at which point the concept of buffers has been introduced, with optimizations such as buffer reusage.
+
+The two above are glow's thing and we take them as is, what we want to be messing with comes afterwards.
+
+The now optimized low level IR is given to the backend which is responsible for implementing all those kernels in the target architecture.
+
+### CPU's backend hackery
+A library implementing various neural networks kernel as efficiently as possible in plain C is compiled with the compiler in parallel as a separate unoptimized LLVM IR module, *libjit*. The idea is rather simple, rather than compiling the code from the get go without any knowledge of the model we are going to be running on it, we want to have that knowledge, why? To perform two very strong optimizations.
+
+1. Function Specialization
+2. Loop unrolling
+
+By which we mean, we would like to know more stuff during compile time to perform constant folding and loop unrolling in our code. Some abstract art trying to explain this setup:
+![image](https://github.com/fvalasiad/glow/assets/72366635/2214472d-7887-47d6-bc03-e9eb49783f97)
+
+And finally the goal of this project is to go ahead and substitute libjit with ARM's CMSIS-NN in an attempt to squeeze out more performance from ARM processors, as ARM's code utilizes SIMD instructions if present, or otherwise provides hardware optimized C code that performs better than the generic C implementations in libjit.
+
+## Current Progress
+So far we've added the backend, can be found under lib/Backends/CMSIS. CMSIS-NN is added as a git submodule in the repository under the same directory.
+
+We are now in the process of trying to see those optimizations being applied in our solution.
+
+### Building
+We've agreed that we will be working on ubuntu 20.04 Focal Fossa, this is what we test for.
+
+Follow glow's instructions, but use llvm-12 instead of the old llvm-8.
+
+make a directory **build**, **cd** into it and run:
+
+```
+cmake .. -DGLOW_WITH_CMSIS=ON -DGLOW_BUILD_TESTS=OFF`
+make -j$(nproc)
+```
+
+next we wanna try and compile our model to see the optimizations taking place. In order to do that we want debug flags in the generated assembly to make reading it an easier task.
+
+The command we run to compile a sample model is the following:
+```
+build/bin/model-compiler -g -backend=CMSIS -float-abi=hard -emit-bundle=./bundle -model=model_69.tflite -dump-graph-DAG="model_graph.dot" -debugify-level=location+variables --target=cortex-m4 --march=arm
+```
+
+ which successfully generates a bundle `./bundle` including the arm machine code `model_69.o`.
+
+ Trying to disassembly it to study it with the following command:
+
+```
+arm-none-eabi-objdump -d bundle/model_69.o > standard_output.asm
+```
+producing the file CMSIS-GLOW-DOC/standard_output.asm, we can see that it unfortunately does not have debug flags.
+
+ trying to get debug flags we add the `--llvm-compiler="llc"` parameter to instruct model-compiler to use an external compiler, as to make it spit out an intermediate bytecode representation of the final bundle. We run the following command:
+ ```
+build/bin/model-compiler -g --llvm-compiler="llc" -backend=CMSIS -float-abi=hard -emit-bundle=./bundle -model=model_69.tflite -dump-graph-DAG="model_graph.dot" -debugify-level=location+variables --target=cortex-m4 --march=arm
+```
+
+the `./bundle` is generated once more but this time it also has the bundle in bytecode representation `./bundle/model_69.bc`
+we compile it to assembly using `llc` like this:
+```
+llc-12 bundle/model_69.bc -o compiled_bytecode.asm
+```
+producing the file CMSIS-GLOW-DOC/compiled_bytecode.asm which thankfully includes debug flags!
+
+So far we are trying to get function specialization to work.
