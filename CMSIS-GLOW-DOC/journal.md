@@ -76,3 +76,12 @@ llc-12 bundle/model_69.bc -o compiled_bytecode.asm
 producing the file CMSIS-GLOW-DOC/compiled_bytecode.asm which thankfully includes debug flags!
 
 So far we are trying to get function specialization to work.
+
+## Update 15/1/2024
+Confirmed that the bytecode we've been looking at `./bundle/model_69.bc` has not in fact gone through the two optimizations we are interested in. Glow indeed relies on LLVM to apply them either by using the library directly or by invoking external tools. In fact we achieved the bytecode by going "partially" through the "using external tools" path.
+
+Moving forward we will be exploring the following options:
+
+1. Make the "using external tools" path work, that is figure out which options we should give to model-compiler to do it for us, potentially modifying the code to include debug flags
+2. Go ahead and optimize the bytecode using external tools ourselves, this requires that we understand the exact process that glow would follow.
+3. Study the raw generated assembly at `standard_output.asm` /CMSIS-GLOW-DOC/standard_output.asm . Not ideal
