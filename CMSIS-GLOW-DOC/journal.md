@@ -85,3 +85,7 @@ Moving forward we will be exploring the following options:
 1. Make the "using external tools" path work, that is figure out which options we should give to model-compiler to do it for us, potentially modifying the code to include debug flags
 2. Go ahead and optimize the bytecode using external tools ourselves, this requires that we understand the exact process that glow would follow.
 3. Study the raw generated assembly at `standard_output.asm` /CMSIS-GLOW-DOC/standard_output.asm . Not ideal
+
+## Update 19/1/2024
+TODO list:
+Continue FunctionSpecializer flow, check constant values in performSpecialization find where the buffer addresses are made constant.
