@@ -87,5 +87,14 @@ Moving forward we will be exploring the following options:
 3. Study the raw generated assembly at `standard_output.asm` /CMSIS-GLOW-DOC/standard_output.asm . Not ideal
 
 ## Update 19/1/2024
+By going with the solution number **2**, we've managed to confirm that the function specialization does indeed happen by studying the LLVM IR.
+![image](https://github.com/fvalasiad/glow/assets/72366635/14bb71ee-00ae-448a-94ba-2ddceb3c300f)
+
+To produce said llvm-ir, one would have to run the optimizer.
+```
+opt-12 -S bundle/model_69.bc -o bundle/model_69.ll
+```
+producing `CMSIS-GLOW-DOC/model_69.ll`
+
 TODO list:
 Continue FunctionSpecializer flow, check constant values in performSpecialization find where the buffer addresses are made constant.
