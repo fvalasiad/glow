@@ -96,5 +96,6 @@ opt-12 -S bundle/model_69.bc -o bundle/model_69.ll
 ```
 producing `CMSIS-GLOW-DOC/model_69.ll`
 
-TODO list:
-Continue FunctionSpecializer flow, check constant values in performSpecialization find where the buffer addresses are made constant.
+## Update 25/1/2024
+1) Validate jit specialization all arguments (were the addressed indeed fixed? Why Glow does not expose it via an API). Use a single layer test with and without the specialization and check the output
+2) Prepare QEMU setup for cortex m4
