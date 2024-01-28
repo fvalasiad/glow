@@ -97,5 +97,13 @@ opt-12 -S bundle/model_69.bc -o bundle/model_69.ll
 producing `CMSIS-GLOW-DOC/model_69.ll`
 
 ## Update 25/1/2024
+Uncertain yet but we believe we found a way to instruct glow to specialize the arrays as well. In fact it was a built-in boolean value named `jitSpecializeAllArguments_` which by default is set to `false`. Without it glow only specializes the dimensions and not the arrays.
+Two questions arise:
+1. Why is it turned off by default?
+2. Why is there no API exposed to set it to true? You can only literally modify its value by hard coding true as the default and re-compiling.
+
+Are there issues arising by setting it to true? Are they issues related to performance, correctness, or something else?
+
+Goals are:
 1) Validate jit specialization all arguments (were the addressed indeed fixed? Why Glow does not expose it via an API). Use a single layer test with and without the specialization and check the output
 2) Prepare QEMU setup for cortex m4
