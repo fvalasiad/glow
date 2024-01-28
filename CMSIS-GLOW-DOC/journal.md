@@ -7,33 +7,24 @@ Glow is a neural network compiler, quite literally taking neural networks as inp
 
 Each target architecture is represented as a backend and its code can be found under /lib/Backends/
 
-The Backend we are interested in for our work is the CPU backend, being essentially our everyday x86/ARM/(soon to be) RISCV CPUs
+The Backend we are interested in for our work is the CPU backend, the target essentially being our everyday x86/ARM/(soon to be) RISCV CPUs
 
 ### How glow works
-Glow has a number of stages between the input neural network and the produced machine code, namely 2 main intermediate representations, the so called "High-level IR" being a graph, as well as a "Low-level IR" being a sequential IR.
+Glow has two main intermediate representations between the input neural network and the produced machine code, the so called "High-level IR" being a graph, as well as a "Low-level IR" being a sequential IR.
 
-Glow employs a number of high level, linear-algebra fashioned optimizations during the "High-level IR" stage to optimize the neural network.
-Glow also optimizes the low level IR, at which point the concept of buffers has been introduced, with optimizations such as buffer reusage.
-
-The two above are glow's thing and we take them as is, what we want to be messing with comes afterwards.
-
-The now optimized low level IR is given to the backend which is responsible for implementing all those kernels in the target architecture.
+Glow employs a number of optimizations during each of the IR stages before giving the now optimized low level IR to the target backend which is responsible for implementing all those kernels in the target architecture.
 
 ### CPU's backend hackery
-A library implementing various neural networks kernel as efficiently as possible in plain C is compiled with the compiler in parallel as a separate unoptimized LLVM IR module, *libjit*. The idea is rather simple, rather than compiling the code from the get go without any knowledge of the model we are going to be running on it, we want to have that knowledge, why? To perform two very strong optimizations.
+A library implementing various neural networks kernel as efficiently as possible in plain C is compiled with the compiler in parallel as a separate unoptimized LLVM IR module, *libjit*. The idea is rather simple, rather than compiling the code from the get go without any knowledge of the model we are going to be running on it, we want to have that static knowledge during compile time to perform constant folding and loop unrolling in our code.
 
-1. Function Specialization
-2. Loop unrolling
-
-By which we mean, we would like to know more stuff during compile time to perform constant folding and loop unrolling in our code. Some abstract art trying to explain this setup:
 ![image](https://github.com/fvalasiad/glow/assets/72366635/2214472d-7887-47d6-bc03-e9eb49783f97)
 
-And finally the goal of this project is to go ahead and substitute libjit with ARM's CMSIS-NN in an attempt to squeeze out more performance from ARM processors, as ARM's code utilizes SIMD instructions if present, or otherwise provides hardware optimized C code that performs better than the generic C implementations in libjit.
+The goal is essentially to achieve greater performance on ARM processors by leveraging the various optimizations performed by glow during the two IR stages and its CPU Backend's hackery, paired with the high performance hardware-specialized CMSIS-NN kernels.
 
-## Current Progress
-So far we've added the backend, can be found under lib/Backends/CMSIS. CMSIS-NN is added as a git submodule in the repository under the same directory.
+Achieving this means taking the CPU's backend setup and replacing the generic **libjit** with CMSIS-NN whenever possible, propagating any kernel not implemented by CMSIS-NN back to the original CPU backend and thus **libjit**.
 
-We are now in the process of trying to see those optimizations being applied in our solution.
+## Setup
+The new backend can be found under lib/Backends/CMSIS. CMSIS-NN is added as a git submodule in the repository under the same directory.
 
 ### Building
 We've agreed that we will be working on ubuntu 20.04 Focal Fossa, this is what we test for.
