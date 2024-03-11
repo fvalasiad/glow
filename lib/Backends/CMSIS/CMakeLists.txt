@@ -36,6 +36,8 @@ set(LIBJIT_CMSIS_COMPILE_OPTIONS
   -std=c++14
   -g
   -O0
+  # When building with -O0, clang adds optnone by default since llvm 5
+  -Xclang -disable-O0-optnone
   ${LLVMCPURuntimeExtraFlags}
 
   -DGLOW_LIBJIT_EXTERNAL_FUNCTIONS

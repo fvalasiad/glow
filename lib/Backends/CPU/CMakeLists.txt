@@ -23,6 +23,8 @@ set(LIBJIT_CPU_COMPILE_OPTIONS
   -std=c++14
   -g
   -O0
+  # When building with -O0, clang adds optnone by default since llvm 5
+  -Xclang -disable-O0-optnone
 
   # When building for a custom target, use this as an example of how to
   # set up cross-compilation correctly. Then, when building bundles,
