@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import torch
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class SimpleBitwiseOrModule(torch.nn.Module):
@@ -34,7 +36,7 @@ class TestBitwiseOr(utils.TorchGlowTestCase):
         [
             lambda: (
                 "basic",
-                torch.tensor([0x01, 0x03, 0xFFFFFFF0, 0x5], dtype=torch.int32),
+                torch.tensor([0x01, 0x03, 0x7FFFFFF0, 0x5], dtype=torch.int32),
                 torch.tensor([0x02, 0x03, 0x2, 0x1F], dtype=torch.int32),
             ),
             lambda: (

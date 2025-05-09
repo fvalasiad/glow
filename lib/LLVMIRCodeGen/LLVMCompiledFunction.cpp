@@ -98,7 +98,7 @@ Error LLVMCompiledFunction::execute(ExecutionContext *context) {
   auto *traceContext = context->getTraceContext();
   TRACE_EVENT_SCOPE_NAMED(traceContext, TraceLevel::RUNTIME,
                           "findJitmainSymbol", fjEvent);
-  Expected<llvm::JITTargetAddress> address = NULL;
+  Expected<llvm::JITTargetAddress> address = 0;
   {
     std::lock_guard<std::mutex> lock(JITLock_);
     auto sym = JIT_->findSymbol("jitmain");
@@ -117,8 +117,8 @@ Error LLVMCompiledFunction::execute(ExecutionContext *context) {
     }
   }
   using JitFuncType =
-      void (*)(uint8_t * constantWeightVars, uint8_t * mutableWeightVars,
-               uint8_t * activations);
+      void (*)(uint8_t *constantWeightVars, uint8_t *mutableWeightVars,
+               uint8_t *activations);
   if (address) {
     JitFuncType funcPtr = reinterpret_cast<JitFuncType>(address.get());
     TRACE_EVENT_SCOPE_END_NAMED(fjEvent);

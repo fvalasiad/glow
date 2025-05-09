@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
 import torch
 import torch.nn.functional as F
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class SimpleLogSoftmaxModel(torch.nn.Module):

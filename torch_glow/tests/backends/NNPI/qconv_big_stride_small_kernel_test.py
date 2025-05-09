@@ -1,9 +1,10 @@
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
 import torch
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class TestQuantizedConv2dBigStrideSmallKernel(utils.TorchGlowTestCase):

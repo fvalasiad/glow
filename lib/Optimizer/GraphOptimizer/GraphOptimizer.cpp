@@ -5333,7 +5333,7 @@ bool OptimizeQuantization::run(Function *F, const CompilationContext &cctx) {
         continue;
       }
     } // Handle RescaleQuantizedNode
-  }   // For each item in the worklist.
+  } // For each item in the worklist.
 
   // This pass is based on real qparams, so skip this opt if using dummies.
   if (!cctx.precisionConfig.loadUniquedDummyQParams) {
@@ -5474,9 +5474,9 @@ struct ChannelShuffleParams {
 /// as ReshapeNode->TransposeNode->ReshapeNode) for which \p node is the leading
 /// ReshapeNode. \returns The original ChannelShuffle parameters if possible and
 /// empty Optional otherwise.
-static llvm::Optional<ChannelShuffleParams>
+static std::optional<ChannelShuffleParams>
 getChannelShuffleParams(const ReshapeNode &node) {
-  auto resM = llvm::Optional<ChannelShuffleParams>();
+  std::optional<ChannelShuffleParams> resM;
 
   llvm::ArrayRef<dim_t> inputDims = node.getInput().dims();
   llvm::ArrayRef<dim_t> resultDims = node.getDims();
@@ -5539,7 +5539,7 @@ bool FoldChannelShuffle::run(Function *F, const CompilationContext &cctx) {
 
     // Compute the original parameters to ChannelShuffle.
     auto paramsM = getChannelShuffleParams(*RN1);
-    if (!paramsM.hasValue()) {
+    if (!paramsM.has_value()) {
       continue;
     }
 
@@ -7589,8 +7589,7 @@ Expected<std::unordered_map<Node *, ConcatNode *>> glow::parallelizeOps(
       }
       default:
         VLOG(1) << "Attempted to parallelize op type " << curNode->getKindName()
-                << "not yet supported"
-                << "\n";
+                << "not yet supported" << "\n";
         break;
       }
       break;
@@ -7775,8 +7774,7 @@ Expected<std::unordered_map<Node *, ConcatNode *>> glow::parallelizeOps(
       }
       default:
         VLOG(1) << "Attempted to parallelize op type " << curNode->getKindName()
-                << "not yet supported"
-                << "\n";
+                << "not yet supported" << "\n";
         break;
       }
       break;

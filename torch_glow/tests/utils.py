@@ -1,4 +1,6 @@
 # isort:skip_file
+
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import itertools
@@ -62,10 +64,22 @@ def ephemeral_torchglow_settings(
         torch_glow.setGlowBackend(backend)
         yield
     finally:
-        torch_glow.enable_convert_to_fp16() if old_fp16 else torch_glow.disable_convert_to_fp16()
+        (
+            torch_glow.enable_convert_to_fp16()
+            if old_fp16
+            else torch_glow.disable_convert_to_fp16()
+        )
         torch_glow.enable_clip_fp16() if old_clip else torch_glow.disable_clip_fp16()
-        torch_glow.enable_convert_fused_to_fp16() if old_convert_fused else torch_glow.disable_convert_fused_to_fp16()
-        torch_glow.enableFusionPass_DO_NOT_USE_THIS() if old_fusion else torch_glow.disableFusionPass()
+        (
+            torch_glow.enable_convert_fused_to_fp16()
+            if old_convert_fused
+            else torch_glow.disable_convert_fused_to_fp16()
+        )
+        (
+            torch_glow.enableFusionPass_DO_NOT_USE_THIS()
+            if old_fusion
+            else torch_glow.disableFusionPass()
+        )
         torch_glow.setGlowBackend(old_backend)
         torch_glow.setFusionBlocklist(old_blocklist)
 

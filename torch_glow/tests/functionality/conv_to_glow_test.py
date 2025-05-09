@@ -1,11 +1,13 @@
 # isort:skip_file
+
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from collections import OrderedDict
 
 import torch
 import torch_glow
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 def create_model(x, relu, bias=True):

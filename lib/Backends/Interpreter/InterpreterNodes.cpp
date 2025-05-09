@@ -446,10 +446,10 @@ void BoundInterpreterFunction::fwdConvolutionInstFloatImpl(
             sum += float(biasW.at({d}));
             outW.at({n, ax, ay, d}) = ElemTy(sum);
           } // W
-        }   // H
-      }     // C
-    }       // G
-  }         // N
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 /// This is the quantized implementation of Convolution.
@@ -543,10 +543,10 @@ void BoundInterpreterFunction::fwdConvolutionInstQuantizedImpl(
             outW.at({n, ax, ay, d}) = quantization::clip<AccumulatorTy, ElemTy>(
                 std::round(float(sum) * (matMulScale / outScale) + outOffset));
           } // W
-        }   // H
-      }     // C
-    }       // G
-  }         // N
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 /// This is the floating point implementation of ConvTranspose.
@@ -620,10 +620,10 @@ void BoundInterpreterFunction::fwdConvTransposeInstFloatImpl(
               }
             }
           } // W
-        }   // H
-      }     // C
-    }       // G
-  }         // N
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 void BoundInterpreterFunction::fwdConvTransposeInst(
@@ -746,10 +746,10 @@ void BoundInterpreterFunction::fwdConvolutionGradInst(
 
             biasG.at({d}) += chainGrad;
           } // W
-        }   // H
-      }     // C
-    }       // G
-  }         // N
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 /// This is the floating point implementation of Convolution3D.
@@ -819,11 +819,11 @@ void BoundInterpreterFunction::fwdConvolution3DInstFloatImpl(
               sum += float(biasW.at({og}));
               outW.at({n, at, ax, ay, og}) = ElemTy(sum);
             } // D
-          }   // W
-        }     // H
-      }       // C
-    }         // G
-  }           // N
+          } // W
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 /// This is the quantized implementation of Convolution3D.
@@ -924,11 +924,11 @@ void BoundInterpreterFunction::fwdConvolution3DInstQuantizedImpl(
                   quantization::clip<AccumulatorTy, ElemTy>(std::round(
                       float(sum) * (matMulScale / outScale) + outOffset));
             } // D
-          }   // W
-        }     // H
-      }       // C
-    }         // G
-  }           // N
+          } // W
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 void BoundInterpreterFunction::fwdConvolution3DInst(
@@ -1054,10 +1054,10 @@ void BoundInterpreterFunction::fwdChannelwiseQuantizedConv2DInstImpl(
             outW.at({n, ax, ay, d}) = quantization::clip<AccumulatorTy, ElemTy>(
                 std::round(float(sum) * (matMulScale / outScale) + outOffset));
           } // W
-        }   // H
-      }     // C
-    }       // G
-  }         // N
+        } // H
+      } // C
+    } // G
+  } // N
 }
 
 template <typename ElemTy, typename AccumulatorTy, typename BiasElemTy>
@@ -1159,11 +1159,11 @@ void BoundInterpreterFunction::fwdChannelwiseQuantizedConv3DInstImpl(
                   quantization::clip<AccumulatorTy, ElemTy>(std::round(
                       float(sum) * (matMulScale / outScale) + outOffset));
             } // W
-          }   // H
-        }     // T
-      }       // C
-    }         // G
-  }           // N
+          } // H
+        } // T
+      } // C
+    } // G
+  } // N
 }
 
 void BoundInterpreterFunction::fwdChannelwiseQuantizedConvolutionInst(
@@ -1263,7 +1263,7 @@ void BoundInterpreterFunction::fwdBatchNormalizationFloatImpl(
           outW.raw(index) =
               ElemTy(scale[c] * (float(inH.raw(index)) - mean[c]) + bias[c]);
         } // C
-      }   // image
+      } // image
     } else {
       // For each channel
       for (dim_t c = 0; c < C; c++) {
@@ -1273,7 +1273,7 @@ void BoundInterpreterFunction::fwdBatchNormalizationFloatImpl(
           outW.raw(index) =
               ElemTy(scale[c] * (float(inH.raw(index)) - mean[c]) + bias[c]);
         } // image
-      }   // C
+      } // C
     }
   } // N
 }
@@ -1370,7 +1370,7 @@ void BoundInterpreterFunction::fwdBatchNormalizationI8Impl(
           ParamTy y = alpha[c] * x + beta[c];
           outH.raw(index) = quantization::quantize(y, outputQ);
         } // image
-      }   // C
+      } // C
     } else {
       // For each channel
       for (dim_t c = 0; c < C; c++) {
@@ -1381,7 +1381,7 @@ void BoundInterpreterFunction::fwdBatchNormalizationI8Impl(
           ParamTy y = alpha[c] * x + beta[c];
           outH.raw(index) = quantization::quantize(y, outputQ);
         } // image
-      }   // C
+      } // C
     }
   } // N
 }
@@ -1476,7 +1476,7 @@ static void fwdMaxPool(Tensor *inW, Tensor *outW, Tensor *argmaxW,
   ShapeHW kdim(kernelSizes);
   ShapeHW sdim(strides);
 
-  llvm::Optional<Handle<int64_t>> argmaxH;
+  std::optional<Handle<int64_t>> argmaxH;
   if (argmaxW) {
     argmaxH = argmaxW->getHandle<int64_t>();
   }
@@ -1528,9 +1528,9 @@ static void fwdMaxPool(Tensor *inW, Tensor *outW, Tensor *argmaxW,
             (*argmaxH).at({n, ax, ay, z}) = argmaxNHWC;
           }
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdMaxPoolInst(const MaxPoolInst *I) {
@@ -1619,9 +1619,9 @@ void BoundInterpreterFunction::fwdAvgPoolInstFloatImpl(const AvgPoolInst *I) {
             outW.at({n, ax, ay, z}) = ElemTy(sum / filterArea);
           }
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPoolInstI8Impl(const AvgPoolInst *I) {
@@ -1683,9 +1683,9 @@ void BoundInterpreterFunction::fwdAvgPoolInstI8Impl(const AvgPoolInst *I) {
                     outQP.offset));
           }
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 }
 
 template <typename ElemTy>
@@ -1743,10 +1743,10 @@ void BoundInterpreterFunction::fwdAvgPool3DInstFloatImpl(const AvgPoolInst *I) {
             assert(filterArea != 0 && "filterArea can't be 0");
             outW.at({n, at, ax, ay, z}) = ElemTy(sum / filterArea);
           } // W
-        }   // H
-      }     // T
-    }       // C
-  }         // N
+        } // H
+      } // T
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPool3DInstI8Impl(const AvgPoolInst *I) {
@@ -1811,10 +1811,10 @@ void BoundInterpreterFunction::fwdAvgPool3DInstI8Impl(const AvgPoolInst *I) {
             outW.at({n, at, ax, ay, z}) =
                 quantization::quantize(float(sum), outputQ);
           } // W
-        }   // H
-      }     // T
-    }       // C
-  }         // N
+        } // H
+      } // T
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPoolInst(const AvgPoolInst *I) {
@@ -1879,9 +1879,9 @@ void BoundInterpreterFunction::fwdAdaptiveAvgPoolInstFloatImpl(
           }
           outW.at({n, ax, ay, z}) = ElemTy(sum / kW / kH);
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 #undef START_IND
 #undef END_IND
 }
@@ -1932,9 +1932,9 @@ void BoundInterpreterFunction::fwdAdaptiveAvgPoolInstI8Impl(
               std::round(float(sum) * (inQP.scale / outQP.scale / kW / kH) +
                          outQP.offset));
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 #undef START_IND
 #undef END_IND
 }
@@ -1993,9 +1993,9 @@ void BoundInterpreterFunction::fwdAdaptiveAvgPoolGradInst(
             }
           }
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 #undef START_IND
 #undef END_IND
 }
@@ -2026,9 +2026,9 @@ void BoundInterpreterFunction::fwdMaxPoolWithArgmaxGradInst(
           float chainGrad = outG.at({n, ax, ay, z});
           inG.raw(argmax.at({n, ax, ay, z})) += chainGrad;
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPool2DGradInst(const AvgPoolGradInst *I) {
@@ -2089,9 +2089,9 @@ void BoundInterpreterFunction::fwdAvgPool2DGradInst(const AvgPoolGradInst *I) {
             }
           }
         } // W
-      }   // H
-    }     // C
-  }       // N
+      } // H
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPool3DGradInst(const AvgPoolGradInst *I) {
@@ -2168,10 +2168,10 @@ void BoundInterpreterFunction::fwdAvgPool3DGradInst(const AvgPoolGradInst *I) {
               }
             }
           } // W
-        }   // H
-      }     // T
-    }       // C
-  }         // N
+        } // H
+      } // T
+    } // C
+  } // N
 }
 
 void BoundInterpreterFunction::fwdAvgPoolGradInst(const AvgPoolGradInst *I) {
@@ -2823,7 +2823,7 @@ void BoundInterpreterFunction::fwdGatherRangesInstImpl(
 
   // Keep track of the total number of elements gathered across all
   // examples for a sanity check later.
-  dim_t grandTotalLen = 0;
+  [[maybe_unused]] dim_t grandTotalLen = 0;
 
   // For each example in ranges:
   for (dim_t example = 0; example < numExamples; ++example) {
@@ -5284,7 +5284,7 @@ void BoundInterpreterFunction::fwdSparseLengthsSumInstI8Impl(
   auto LH = lengths->getHandle<int32_t>();
 
   size_t segments = lengths->dims()[0];
-  size_t totalLength = 0;
+  [[maybe_unused]] size_t totalLength = 0;
   for (size_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -5334,7 +5334,7 @@ void BoundInterpreterFunction::fwdSparseLengthsSumInstFloatImpl(
   auto LH = lengths->getHandle<int32_t>();
 
   size_t segments = lengths->dims()[0];
-  size_t totalLength = 0;
+  [[maybe_unused]] size_t totalLength = 0;
   for (size_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -5386,7 +5386,7 @@ void BoundInterpreterFunction::fwdSparseLengthsWeightedSumInstFloatImpl(
   auto LH = lengths->getHandle<int32_t>();
 
   size_t segments = lengths->dims()[0];
-  size_t totalLength = 0;
+  [[maybe_unused]] size_t totalLength = 0;
   for (dim_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -5427,7 +5427,7 @@ void BoundInterpreterFunction::fwdSparseLengthsWeightedSumInstI8Impl(
   auto LH = lengths->getHandle<int32_t>();
 
   dim_t segments = lengths->dims()[0];
-  dim_t totalLength = 0;
+  [[maybe_unused]] dim_t totalLength = 0;
   for (dim_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -5503,7 +5503,7 @@ void BoundInterpreterFunction::fwdSparseLengthsWeightedSumGradInst(
   auto IH = indices->getHandle<int64_t>();
 
   size_t segments = lengths->dims()[0];
-  size_t totalLength = 0;
+  [[maybe_unused]] size_t totalLength = 0;
   for (size_t i = 0; i < segments; ++i) {
     totalLength += LH.raw(i);
   }
@@ -5682,7 +5682,7 @@ void BoundInterpreterFunction::fwdRowwiseQuantizedSparseLengthsWeightedSumImpl(
   auto LH = lengths->getHandle<int32_t>();
 
   dim_t segments = lengths->dims()[0];
-  dim_t totalLength = 0;
+  [[maybe_unused]] dim_t totalLength = 0;
   for (dim_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -5777,7 +5777,7 @@ void BoundInterpreterFunction::
   auto LH = lengths->getHandle<int32_t>();
 
   size_t segments = lengths->dims()[0];
-  size_t totalLength = 0;
+  [[maybe_unused]] size_t totalLength = 0;
   for (size_t i = 0; i < segments; i++) {
     totalLength += LH.raw(i);
   }
@@ -6678,7 +6678,7 @@ void BoundInterpreterFunction::fwdIntNBitSplitEmbeddingWeightedBagsImpl(
   auto weightsTysH = weightsTys->getHandle<uint8_t>();
   auto dimOffsetsH = dimOffsets->getHandle<int32_t>();
   auto weightsOffsetsH = weightsOffsets->getHandle<WeightsOffsetTy>();
-  llvm::Optional<Handle<IndiceWeightTy>> indiceWeightsH;
+  std::optional<Handle<IndiceWeightTy>> indiceWeightsH;
   if (indiceWeights) {
     indiceWeightsH = indiceWeights->getHandle<IndiceWeightTy>();
   }
@@ -6695,7 +6695,7 @@ void BoundInterpreterFunction::fwdIntNBitSplitEmbeddingWeightedBagsImpl(
     const auto placement = weightsPlacementH.raw(t);
     assert(placement != WeightsPlacement::DEVICE);
     auto weightsH = uvmWeightsH;
-    auto maxWeightsBytes = maxUvmWeightsBytes;
+    [[maybe_unused]] auto maxWeightsBytes = maxUvmWeightsBytes;
     if (placement == WeightsPlacement::HOST) {
       weightsH = devWeightsH;
       maxWeightsBytes = maxDevWeightsBytes;
@@ -8138,9 +8138,9 @@ static std::vector<BinGrid<T>> getROIAlignInterpolationCoordinates(
 
           binGrids.push_back(bg);
         } // end of w
-      }   // end of h
-    }     // end of W
-  }       // end of H
+      } // end of h
+    } // end of W
+  } // end of H
 
   return binGrids;
 }
@@ -8304,8 +8304,8 @@ void BoundInterpreterFunction::fwdROIAlignInstFloatImpl(
               // interpolation along vertical line
               values.push_back(value);
             } // end of w
-          }   // end of h
-              // {Average or Max} pooling
+          } // end of h
+            // {Average or Max} pooling
           resultH.at({b, oh, ow, d}) =
               (mode == PoolingMode::AVG)
                   ? std::accumulate(values.begin(), values.end(), T(0.0)) /
@@ -8316,8 +8316,8 @@ void BoundInterpreterFunction::fwdROIAlignInstFloatImpl(
         } // end of d
         binCount = binCount + (samplingRatioH * samplingRatioW);
       } // end of W
-    }   // end of H
-  }     // end of b
+    } // end of H
+  } // end of b
 }
 
 void BoundInterpreterFunction::fwdROIAlignInst(glow::ROIAlignInst const *I) {

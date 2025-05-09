@@ -19,7 +19,7 @@
 #include "glow/Graph/FXIRWrapper.h"
 #include "llvm/Support/Casting.h"
 
-#include <folly/DynamicConverter.h>
+#include <folly/json/DynamicConverter.h>
 
 using namespace glow;
 
@@ -141,6 +141,19 @@ Value *glow::valueForNode(
 bool glow::hasFxOutTensorView(const folly::dynamic &node) {
   const auto &kwargs = getNodeKwargs(node);
   return kwargs.find("out_memref") != kwargs.items().end();
+}
+
+int glow::countFxOutTensorView(const folly::dynamic &node) {
+  const auto &kwargs = getNodeKwargs(node);
+  if (!hasFxOutTensorView(node)) {
+    return 0;
+  }
+  const auto &out = kwargs["out_memref"];
+  if (out.isObject()) {
+    return 1;
+  }
+  CHECK(out.isArray()) << "Expected Node array given multi-output Node";
+  return out.size();
 }
 
 const folly::dynamic &glow::getFxOutTensorView(const folly::dynamic &node,

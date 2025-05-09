@@ -1,8 +1,9 @@
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import torch
 import torch_glow
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class TestPrintJitNodeIndices(utils.TorchGlowTestCase):

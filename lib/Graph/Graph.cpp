@@ -422,8 +422,7 @@ class ModuleDottyPrinter : public AbstractDottyPrinter {
     // Print a Function descriptor that looks like this:
     // vNNNN [ label = "{...}" ];
     os << uniqueVertexName(F) << "[\n"
-       << "\tlabel = \"Function\\l"
-       << "name : " << F->getName().str() << "\\l"
+       << "\tlabel = \"Function\\l" << "name : " << F->getName().str() << "\\l"
        << "node count : " << F->getNodes().size() << "\"\n"
        << "\tshape = box\n"
        << "\tfillcolor=gray89, style=\"filled,rounded\"\n"
@@ -4490,10 +4489,12 @@ void Function::createOnnxRNN(llvm::StringRef namePrefix, NodeValue X,
   {idx0, idx1 * hiddenSize, 0}, {                                              \
     idx0 + 1, (idx1 + 1) * hiddenSize, hiddenSize                              \
   }
+  // clang-format off
 #define RNN_B_SLICE_RANGE(idx0, idx1)                                          \
   {idx0, idx1 * hiddenSize}, { idx0 + 1, (idx1 + 1) * hiddenSize }
 #define RNN_H_SLICE_RANGE(idx)                                                 \
   {idx + 0, 0, 0}, { idx + 1, batchSize, hiddenSize }
+// clang-format on
 #define RNN_CREATE_FC(name, LHS, RHS, BIAS)                                    \
   BIAS ? (Node *)createFullyConnected(name, LHS, RHS, BIAS)                    \
        : (Node *)createMatMul(name, LHS, RHS)
@@ -4698,10 +4699,12 @@ void Function::createOnnxGRU(llvm::StringRef namePrefix, NodeValue X,
   {idx0, idx1 * hiddenSize, 0}, {                                              \
     idx0 + 1, (idx1 + 1) * hiddenSize, hiddenSize                              \
   }
+  // clang-format off
 #define GRU_B_SLICE_RANGE(idx0, idx1)                                          \
   {idx0, idx1 * hiddenSize}, { idx0 + 1, (idx1 + 1) * hiddenSize }
 #define GRU_H_SLICE_RANGE(idx)                                                 \
   {idx + 0, 0, 0}, { idx + 1, batchSize, hiddenSize }
+// clang-format on
 #define GRU_CREATE_FC(name, LHS, RHS, BIAS)                                    \
   BIAS ? (Node *)createFullyConnected(name, LHS, RHS, BIAS)                    \
        : (Node *)createMatMul(name, LHS, RHS)
@@ -4981,8 +4984,10 @@ void Function::createOnnxLSTM(llvm::StringRef namePrefix, NodeValue X,
   }
 #define LSTM_B_SLICE_RANGE(idx0, idx1)                                         \
   {idx0, idx1 * hiddenSize}, { idx0 + 1, (idx1 + 1) * hiddenSize }
+  // clang-format off
 #define LSTM_P_SLICE_RANGE(idx0, idx1)                                         \
   {idx0, idx1 * hiddenSize}, { idx0 + 1, (idx1 + 1) * hiddenSize }
+// clang-format on
 #define LSTM_CREATE_FC(name, LHS, RHS, BIAS)                                   \
   BIAS ? (Node *)createFullyConnected(name, LHS, RHS, BIAS)                    \
        : (Node *)createMatMul(name, LHS, RHS)
@@ -5710,7 +5715,7 @@ void Function::createMelWeights(llvm::StringRef prefix, dim_t spectrogramLength,
   }
 
   // Validate Mel ranges.
-  dim_t melBinFreqWeightsNumValidate = 0;
+  [[maybe_unused]] dim_t melBinFreqWeightsNumValidate = 0;
   for (dim_t melIdx = 0; melIdx < numMelBins; melIdx++) {
     int32_t freqIdxRange =
         melRangesH.raw(2 * melIdx + 1) - melRangesH.raw(2 * melIdx + 0) + 1;

@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
 import torch
-from tests import utils
-from tests.utils import check_skip, DEFAULT_BACKEND
+from glow.glow.torch_glow.tests.tests import utils
+from glow.glow.torch_glow.tests.tests.utils import check_skip, DEFAULT_BACKEND
 
 
 class TestEmbeddingBag(utils.TorchGlowTestCase):
@@ -63,9 +65,11 @@ class TestQuantizedEmbeddingBag(utils.TorchGlowTestCase):
                     bits="_4bit" if is4bit else "_byte",
                     weighted="_weighted" if is_weighted else "",
                     fp16="_fp16" if use_fp16 else "",
-                    sample_weights="_sample_weights_fp16"
-                    if per_sample_weights_fp16 and is_weighted
-                    else "",
+                    sample_weights=(
+                        "_sample_weights_fp16"
+                        if per_sample_weights_fp16 and is_weighted
+                        else ""
+                    ),
                     backend="_" + DEFAULT_BACKEND,
                 ),
                 num_lengths,
@@ -157,9 +161,11 @@ class TestQuantizedEmbeddingBag(utils.TorchGlowTestCase):
             indices,
             offsets,
             fusible_ops={
-                "quantized::embedding_bag_4bit_rowwise_offsets"
-                if is4bit
-                else "quantized::embedding_bag_byte_rowwise_offsets"
+                (
+                    "quantized::embedding_bag_4bit_rowwise_offsets"
+                    if is4bit
+                    else "quantized::embedding_bag_byte_rowwise_offsets"
+                )
             },
             fp16=use_fp16,
             # FP16 version is known to yeild different results, so our

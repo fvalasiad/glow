@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 import torch
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class GatherModule(torch.nn.Module):

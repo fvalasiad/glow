@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
 import torch
+from glow.glow.torch_glow.tests.tests import utils
 from parameterized import parameterized
-from tests import utils
 
 
 class SimpleBitwiseNotModule(torch.nn.Module):

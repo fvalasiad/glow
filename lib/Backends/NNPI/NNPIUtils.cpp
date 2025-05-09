@@ -47,7 +47,7 @@ void DotWriter::clear() {
 
 void DotWriter::addNode(std::string name, std::string label, unsigned color,
                         std::string subGraph) {
-  ostringstream os;
+  std::ostringstream os;
   os << name << " [\n";
   os << "\tlabel = \"" << label << "\"\n";
   os << "\tstyle=\"filled,rounded\"\n";
@@ -79,8 +79,7 @@ void DotWriter::writeToFile(std::string filename) {
   outFile << "\n";
 
   for (const auto &sg : subGraphNodes_) {
-    outFile << "subgraph "
-            << "cluster_" << sg.first << " {\n";
+    outFile << "subgraph " << "cluster_" << sg.first << " {\n";
     outFile << "\tlabel = \"" << subGraphLabels_.at(sg.first) << "\";\n";
     for (const auto &n : sg.second) {
       outFile << n; //<< ";\n";

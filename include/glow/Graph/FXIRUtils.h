@@ -24,7 +24,7 @@
 #include <cstdint>
 #include <folly/Conv.h>
 #include <folly/String.h>
-#include <folly/dynamic.h>
+#include <folly/json/dynamic.h>
 #include <type_traits>
 
 namespace glow {
@@ -118,6 +118,8 @@ std::string getNodeTarget(const folly::dynamic &node);
 ElemKind getNodeDataType(const folly::dynamic &node, int idx = -1);
 
 bool hasFxOutTensorView(const folly::dynamic &node);
+
+int countFxOutTensorView(const folly::dynamic &node);
 
 /// Get out tensorview for \p node. If \p idx is non-negative then assume this
 /// is a multi-output node, so get the tensorview output for that specific idx.

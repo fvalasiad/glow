@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pyre-ignore-all-errors
+
 # isort:skip_file
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import torch
 import torch_glow
-from tests import utils
-from tests.utils import GLOW_FUSION_GROUP, SUBGRAPH_ATTR
+from glow.glow.torch_glow.tests.tests import utils
+from glow.glow.torch_glow.tests.tests.utils import GLOW_FUSION_GROUP, SUBGRAPH_ATTR
 
 
 class TestGetAttr(utils.TorchGlowTestCase):

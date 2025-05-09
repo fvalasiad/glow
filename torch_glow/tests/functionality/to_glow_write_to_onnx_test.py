@@ -1,4 +1,6 @@
 # isort:skip_file
+
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import glob
@@ -6,7 +8,7 @@ import os
 
 import torch
 import torch_glow
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class Foo(torch.nn.Module):
@@ -85,7 +87,7 @@ class TestToGlowWriteToOnnx(utils.TorchGlowTestCase):
         self.assertEqual(type(g), type(t))
         self.assertEqual(len(g), len(t))
 
-        for (gi, ti) in zip(g, t):
+        for gi, ti in zip(g, t):
             self.assertTrue(torch.allclose(gi, ti))
 
         assert os.path.exists(onnx_prefix + ".onnxtxt")

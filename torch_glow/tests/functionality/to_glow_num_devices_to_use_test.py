@@ -1,8 +1,9 @@
+# pyre-ignore-all-errors
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import torch
 import torch_glow
-from tests import utils
+from glow.glow.torch_glow.tests.tests import utils
 
 
 class SimpleModule(torch.nn.Module):
@@ -42,7 +43,7 @@ class TestToGlowNumDevicesToUse(utils.TorchGlowTestCase):
 
         self.assertEqual(type(g), type(t))
         self.assertEqual(len(g), len(t))
-        for (gi, ti) in zip(g, t):
+        for gi, ti in zip(g, t):
             self.assertTrue(torch.allclose(gi, ti))
 
     def devices_to_use_test(self):

@@ -143,8 +143,8 @@ Error InferencePoolEnv::init(NNPIAdapterContainer *adapter,
         size_t readSize = ss->read(static_cast<char *>(ptr), size * count);
         return readSize;
       };
-      inputStream.writeCallback = NULL;
-      inputStream.seekCallback = NULL;
+      inputStream.writeCallback = nullptr;
+      inputStream.seekCallback = nullptr;
       DBG_MEM_USAGE("call nnpiHostNetworkCreateFromStream");
       LOG_NNPI_INF_IF_ERROR_RETURN_LLVMERROR(
           nnpiHostNetworkCreateFromStream(pAdapter_->getHandle(), &inputStream,
@@ -169,8 +169,7 @@ Error InferencePoolEnv::init(NNPIAdapterContainer *adapter,
     NNPIDeviceNetworkConfig *pCfg = nullptr;
     if (!isEmptyDeviceNetworkConfig(cfg)) {
       pCfg = &cfg;
-      LOG(INFO) << "DeviceNetwork PnP: "
-                << "\n";
+      LOG(INFO) << "DeviceNetwork PnP: " << "\n";
       LOG(INFO) << "  Ring: " << cfg.pnpHints.ringFrequencyPrio << "\n";
       LOG(INFO) << "  ICEBO 0: " << cfg.pnpHints.iceBOFrequencyPrio[0] << "\n";
       LOG(INFO) << "  ICEBO 1: " << cfg.pnpHints.iceBOFrequencyPrio[1] << "\n";
@@ -349,8 +348,7 @@ InferencePoolEnv::createDetachedInferenceContext(PlaceholderUsageMap &phUsage) {
       label << "<" << input << ">" << input << "|";
     }
     label.seekp(-1, label.cur); // remove the trailing '|'
-    label << "}|{"
-          << "Function\\lname : " << functionName_ << "}|{";
+    label << "}|{" << "Function\\lname : " << functionName_ << "}|{";
     for (auto output : nnpiCompiledFunction_->getOutputNames()) {
       label << "<" << output << ">" << output << "|";
     }
